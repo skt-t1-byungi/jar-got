@@ -17,10 +17,10 @@ const got = jarGot()
 
 (async _ => {
   await got('http://google.co.kr')
-  // stores the response "set-cookie" header.
+  // stores the "set-cookie" header.
 
   await got('http://google.co.kr')
-  // request "cookie" header is the stored cookies.
+  // "cookie" header in request is the stored cookies.
 })()
 ```
 
@@ -28,7 +28,7 @@ const got = jarGot()
 ```js
 const got1 = jarGot()
 
-const got2 = jarGot(got1.got) // got1.jar === got2.jar
+const got2 = jarGot(got1.jar) // got1.jar === got2.jar
 ```
 
 ### Serialize, deserialize
