@@ -1,7 +1,7 @@
 const test = require('ava')
 const cookie = require('cookie')
 const nock = require('nock')
-const gotFactory = require('.')
+const jarGot = require('.')
 const stream = require('stream')
 
 test.before(t => {
@@ -15,7 +15,7 @@ test.before(t => {
 })
 
 test('basic resposne set-cookie', async t => {
-  const got = gotFactory()
+  const got = jarGot()
 
   await got('http://test.com/')
 
@@ -27,7 +27,7 @@ test('basic resposne set-cookie', async t => {
 })
 
 test.cb('stream resposne set-cookie', t => {
-  const got = gotFactory()
+  const got = jarGot()
 
   got.stream('http://test.com/')
     .pipe(stream.PassThrough())
@@ -42,7 +42,7 @@ test.cb('stream resposne set-cookie', t => {
 })
 
 test('request with jar cookie', async t => {
-  const got = gotFactory()
+  const got = jarGot()
 
   const res1 = await got('http://test.com/')
   t.falsy(res1.req.getHeader('cookie'))

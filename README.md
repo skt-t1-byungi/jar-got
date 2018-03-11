@@ -15,14 +15,30 @@ yarn add jar-got
 const jarGot = require('jar-got')
 const got = jarGot()
 
-got('http://google.co.kr')
+(async _ => {
+  await got('http://google.co.kr')
+  // stores the response "set-cookie" header.
+
+  await got('http://google.co.kr')
+  // request "cookie" header is the stored cookies.
+})()
 ```
 
 ### Using existing cookie jar.
 ```js
-const tough = require('tough-cookie')
-const cookieJar = new tough.CookieJar();
-const got = jarGot(cookieJar) // got.jar === cookieJar
+const got1 = jarGot()
+
+const got2 = jarGot(got1.got) // got1.jar === got2.jar
+```
+
+### Serialize, deserialize
+```js
+// serialize
+const serialized = got1.jar.serializeSync();
+
+// deserialize
+const {CookieJar} = require('tough-cookie');
+const got2 = jarGot(CookieJar.deserializeSync(serialized))
 ```
 
 ## License
