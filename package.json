@@ -1,0 +1,32 @@
+{
+  "name": "jar-got",
+  "version": "0.0.1",
+  "author": {
+    "name": "skt-t1-byungi",
+    "email": "tiniwz@gmail.com"
+  },
+  "keywords": [
+    "jar",
+    "cookie",
+    "got"
+  ],
+  "main": "src/index.js",
+  "scripts": {
+    "test": "ava"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "got": "^8.3.0",
+    "tough-cookie": "^2.3.4"
+  },
+  "devDependencies": {
+    "ava": "^0.25.0",
+    "cookie": "^0.3.1",
+    "eslint": "^4.18.2",
+    "eslint-config-byungi": "^0.0.11",
+    "nock": "^9.2.3"
+  },
+  "eslintConfig": {
+    "extends": "byungi"
+  }
+}
