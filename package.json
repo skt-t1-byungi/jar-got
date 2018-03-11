@@ -10,7 +10,7 @@
     "cookie",
     "got"
   ],
-  "main": "src/index.js",
+  "main": "index.js",
   "scripts": {
     "test": "ava"
   },

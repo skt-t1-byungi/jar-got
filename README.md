@@ -1,5 +1,6 @@
 # jar-got
-convenience wrapper for got to persisting cookie
+> convenience wrapper for got to persisting cookie
+
 [![npm](https://img.shields.io/npm/v/jar-got.svg?style=flat-square)](https://www.npmjs.com/package/jar-got)
 [![npm](https://img.shields.io/npm/dt/jar-got.svg?style=flat-square)](https://www.npmjs.com/package/jar-got)
 
