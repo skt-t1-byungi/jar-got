@@ -1,31 +1,29 @@
-const got = require('got')
-const tough = require('tough-cookie')
+const orgGot = require('got')
+const {CookieJar} = require('tough-cookie')
 
-module.exports = (
-  jar = new tough.CookieJar()
-) => {
-  const jarGot = (url, opts = {}) => {
+const jarGot = module.exports = (jar = new CookieJar()) => {
+  const got = (url, opts = {}) => {
     opts.headers = Object.assign({ cookie: jar.getCookieStringSync(url) }, opts.headers)
 
-    const setCookieHandler = res => {
-      if (!res.headers['set-cookie']) return
+    const cookieHandler = res => {
+      if (!res.headers['set-cookie']) return res
 
       for (const cookieStr of res.headers['set-cookie']) {
         jar.setCookieSync(cookieStr, url)
       }
+
+      return res
     }
 
     if (opts.stream) {
-      return got.stream(url, opts).on('response', setCookieHandler)
+      return orgGot.stream(url, opts).on('response', cookieHandler)
     }
 
-    const request = got(url, opts)
-    request.then(setCookieHandler)
-
-    return request
+    return orgGot(url, opts).then(cookieHandler)
   }
 
-  jarGot.jar = jar
+  got.jar = jar
+  got.save = () => jar.serializeSync()
 
   const helpers = [
     'get',
@@ -36,16 +34,18 @@ module.exports = (
     'delete'
   ]
 
-  jarGot.stream = (url, opts) => jarGot(url, Object.assign({}, opts, {
+  got.stream = (url, opts) => got(url, Object.assign({}, opts, {
     json: false,
     stream: true
   }))
 
   for (const x of helpers) {
     const method = x.toUpperCase()
-    jarGot[x] = (url, opts) => jarGot(url, Object.assign({}, opts, {method}))
-    jarGot.stream[x] = (url, opts) => jarGot.stream(url, Object.assign({}, opts, {method}))
+    got[x] = (url, opts) => got(url, Object.assign({}, opts, {method}))
+    got.stream[x] = (url, opts) => got.stream(url, Object.assign({}, opts, {method}))
   }
 
-  return jarGot
+  return got
 }
+
+jarGot.restore = (saved) => jarGot(CookieJar.deserializeSync(saved))

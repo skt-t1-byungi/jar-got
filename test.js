@@ -9,21 +9,18 @@ test.before(t => {
     .persist()
     .get('/')
     .reply(200, 'ok', {
-      'Set-Cookie': Object.entries({a: 'hello', b: 'world'})
-        .map(([k, v]) => cookie.serialize(k, v))
+      'Set-Cookie': Object.entries({a: 'hello', b: 'world'}).map(([k, v]) => cookie.serialize(k, v))
     })
 })
 
-test('basic resposne set-cookie', async t => {
+const parseCookies = got => got.jar.getCookiesSync('http://test.com').map(cookie => cookie.cookieString())
+
+test('basic response set-cookie', async t => {
   const got = jarGot()
 
   await got('http://test.com/')
 
-  t.deepEqual(
-    got.jar.getCookiesSync('http://test.com')
-      .map(cookie => cookie.cookieString()),
-    ['a=hello', 'b=world']
-  )
+  t.deepEqual(parseCookies(got), ['a=hello', 'b=world'])
 })
 
 test.cb('stream resposne set-cookie', t => {
@@ -32,11 +29,7 @@ test.cb('stream resposne set-cookie', t => {
   got.stream('http://test.com/')
     .pipe(stream.PassThrough())
     .on('finish', _ => {
-      t.deepEqual(
-        got.jar.getCookiesSync('http://test.com')
-          .map(cookie => cookie.cookieString()),
-        [ 'a=hello', 'b=world' ]
-      )
+      t.deepEqual(parseCookies(got), ['a=hello', 'b=world'])
       t.end()
     })
 })
@@ -49,4 +42,13 @@ test('request with jar cookie', async t => {
 
   const res2 = await got('http://test.com/')
   t.is(res2.req.getHeader('cookie'), 'a=hello; b=world')
+})
+
+test('save, restore cookies', async t => {
+  const got = jarGot()
+
+  await got('http://test.com/')
+
+  const restoredGot = jarGot.restore(got.save())
+  t.deepEqual(parseCookies(restoredGot), ['a=hello', 'b=world'])
 })
