@@ -6,6 +6,9 @@
     "name": "skt-t1-byungi",
     "email": "tiniwz@gmail.com"
   },
+  "files": [
+    "index.js"
+  ],
   "keywords": [
     "jar",
     "cookie",
